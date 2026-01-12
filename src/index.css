@@ -1,0 +1,161 @@
+@import "tailwindcss";
+
+@theme {
+  --color-glacier-900: #020617;
+  --color-glacier-100: #e0f2fe;
+  --color-icy-accent: #38bdf8;
+}
+
+body {
+  background: var(--color-glacier-900);
+  overflow-x: hidden;
+}
+
+/* Glassmorphism icy effect */
+.glacier-card {
+  background: rgba(15, 23, 42, 0.6);
+  backdrop-filter: blur(12px) saturate(150%);
+  border: 1px solid rgba(56, 189, 248, 0.2);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+}
+
+.glacier-card:hover {
+  border-color: rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 20px rgba(56, 189, 248, 0.15);
+  transform: translateY(-2px);
+}
+
+/* Parallax Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #020617;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #38bdf8;
+}
+
+/* 3D Card Parallax Effect */
+.glacier-card {
+  transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  perspective: 1000px;
+}
+
+.glacier-card:active {
+  transform: scale(0.98);
+}
+
+@import "tailwindcss";
+
+/* 1. Theme Variables using Tailwind 4 syntax */
+@theme {
+  --color-glacier-950: #020617;
+  --color-glacier-900: #0f172a;
+  --color-glacier-800: #1e293b;
+  --color-glacier-100: #e0f2fe;
+  --color-icy-accent: #38bdf8;
+  --color-security-pass: #10b981;
+  --color-security-fail: #f43f5e;
+}
+
+/* 2. Global Resets & Parallax Foundation */
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-glacier-950);
+  color: var(--color-glacier-100);
+  overflow-x: hidden;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* 3. Enhanced Glacier Glassmorphism */
+.glacier-card {
+  background: linear-gradient(135deg,
+      rgba(15, 23, 42, 0.7) 0%,
+      rgba(30, 41, 59, 0.5) 100%);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1px solid rgba(56, 189, 248, 0.15);
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.5);
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 4. Interactive Hover & 3D Depth */
+.glacier-card:hover {
+  border-color: rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 30px rgba(56, 189, 248, 0.1);
+  transform: translateY(-5px) scale(1.01);
+}
+
+/* Add an "icy" light sweep effect on hover */
+.glacier-card::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg,
+      transparent,
+      rgba(255, 255, 255, 0.03),
+      transparent);
+  transform: rotate(45deg);
+  transition: 0.8s;
+  pointer-events: none;
+}
+
+.glacier-card:hover::after {
+  left: 100%;
+}
+
+/* 5. ZTNA Status Animations */
+/* Pulsing for active monitoring */
+.status-pulse-pass {
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  animation: pulse-green 2s infinite;
+}
+
+@keyframes pulse-green {
+  0% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.4);
+  }
+
+  70% {
+    box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+  }
+
+  100% {
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
+  }
+}
+
+/* 6. Professional Scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-glacier-950);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-glacier-800);
+  border-radius: 100px;
+  border: 1px solid rgba(56, 189, 248, 0.1);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-icy-accent);
+}
