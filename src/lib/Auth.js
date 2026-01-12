@@ -14,7 +14,8 @@ export const authService = {
     async login(email, password) {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        // JWT is passed to Spring Boot's MonitoringFilter and DevicePostureFilter
+
+        // JWT used by backend MonitoringFilter to identify users
         localStorage.setItem('supabase_token', data.session.access_token);
         return data;
     },

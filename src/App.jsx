@@ -6,13 +6,13 @@ import {
 } from 'lucide-react';
 
 // Services & Components
-import { authService } from './lib/Auth';
+import { authService } from './lib/auth';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PostureHeartbeat from './components/security/PostureHeartbeat';
 
 // Page Imports
 import Landing from './pages/Landing';
-import Auth from './pages/Auth';
+import Auth from './pages/auth';
 import Dashboard from './pages/Dashboard';
 import MobileSecurity from './pages/MobileSecurity';
 import NetworkSegments from './pages/NetworkSegments';

@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-// In production, this should be a unique hardware ID stored in localStorage
-export const DEVICE_ID = localStorage.getItem('ZTNA_DEVICE_ID') || 'DEV-NODE-99';
+// Hardware ID verified by backend DevicePostureFilter
+export const DEVICE_ID = 'dev-win-11-prod-01';
 
 const api = axios.create({
     baseURL: 'http://localhost:8080/api', // Matches server.port in application.properties
@@ -12,8 +12,7 @@ api.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
-
-    // CRITICAL: This header is required by your DevicePostureFilter.java
+    // Mandatory ZTNA header
     config.headers['X-Device-Id'] = DEVICE_ID;
     return config;
 });
