@@ -1,11 +1,10 @@
 import axios from 'axios';
 
-// This ID is used by the backend DevicePostureFilter to verify compliance
-export const DEVICE_ID = 'dev-win-11-prod-01';
+// In production, this should be a unique hardware ID stored in localStorage
+export const DEVICE_ID = localStorage.getItem('ZTNA_DEVICE_ID') || 'DEV-NODE-99';
 
 const api = axios.create({
-    // Matches server.port=8080 in application.properties
-    baseURL: 'http://localhost:8080/api',
+    baseURL: 'http://localhost:8080/api', // Matches server.port in application.properties
 });
 
 api.interceptors.request.use((config) => {
@@ -14,7 +13,7 @@ api.interceptors.request.use((config) => {
         config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // Mandatory header for the backend DevicePostureFilter
+    // CRITICAL: This header is required by your DevicePostureFilter.java
     config.headers['X-Device-Id'] = DEVICE_ID;
     return config;
 });

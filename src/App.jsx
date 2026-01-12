@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Link, useLocation, useNavigate } from 'react-router-dom';
 import {
   LayoutDashboard, Shield, Smartphone, Network,
-  FileText, Settings, Menu, X, ShieldCheck
+  FileText, Settings, Menu, X, ShieldCheck, LogOut
 } from 'lucide-react';
 
-// Core Security Components
+// Services & Components
+import { authService } from './lib/Auth';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PostureHeartbeat from './components/security/PostureHeartbeat';
 
 // Page Imports
+import Landing from './pages/Landing';
 import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import MobileSecurity from './pages/MobileSecurity';
@@ -18,9 +20,6 @@ import IdentityManagement from './pages/IdentityManagement';
 import AccessPolicies from './pages/AccessPolicies';
 import AuditLogs from './pages/AuditLogs';
 
-/**
- * SidebarItem: Individual navigation link with active state styling
- */
 const SidebarItem = ({ icon: Icon, label, path, active }) => (
   <Link
     to={path}
@@ -34,16 +33,18 @@ const SidebarItem = ({ icon: Icon, label, path, active }) => (
   </Link>
 );
 
-/**
- * GlacierLayout: The main wrapper for protected pages
- * Features: Parallax background, Top-bar with Heartbeat, and Sidebar
- */
 const GlacierLayout = ({ children }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    await authService.logout();
+    navigate('/');
+  };
 
   const menuItems = [
-    { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+    { icon: LayoutDashboard, label: 'Dashboard', path: '/dashboard' },
     { icon: Shield, label: 'Identity Mgmt', path: '/identity' },
     { icon: Smartphone, label: 'Mobile Security', path: '/mobile' },
     { icon: Network, label: 'Network Segments', path: '/network' },
@@ -54,13 +55,11 @@ const GlacierLayout = ({ children }) => {
 
   return (
     <div className="min-h-screen bg-glacier-950 text-slate-200 flex overflow-hidden">
-      {/* 1. Global Parallax Background Orbs */}
       <div className="fixed inset-0 overflow-hidden -z-10 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] w-[600px] h-[600px] bg-blue-600/10 rounded-full blur-[120px] animate-pulse" />
         <div className="absolute bottom-[-10%] right-[-10%] w-[500px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] animate-pulse" style={{ animationDelay: '2s' }} />
       </div>
 
-      {/* 2. Glacier Sidebar */}
       <aside className={`fixed inset-y-0 left-0 z-50 w-64 bg-glacier-900/40 backdrop-blur-2xl border-r border-white/5 transform transition-transform lg:translate-x-0 ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="p-6 h-full flex flex-col">
           <div className="flex items-center gap-3 mb-10">
@@ -74,101 +73,53 @@ const GlacierLayout = ({ children }) => {
 
           <nav className="space-y-2 flex-1">
             {menuItems.map((item) => (
-              <SidebarItem
-                key={item.path}
-                {...item}
-                active={location.pathname === item.path}
-              />
+              <SidebarItem key={item.path} {...item} active={location.pathname === item.path} />
             ))}
           </nav>
 
           <div className="pt-6 border-t border-white/5">
-            <div className="p-4 bg-white/5 rounded-2xl border border-white/5">
-              <p className="text-[10px] font-bold text-slate-500 uppercase tracking-widest mb-1">Secure Session</p>
-              <p className="text-xs text-emerald-400 font-mono">ID: 0x4f...2e9</p>
-            </div>
+            <button
+              onClick={handleLogout}
+              className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 border border-transparent hover:border-rose-500/20 transition-all duration-300 group cursor-pointer"
+            >
+              <LogOut size={20} className="group-hover:-translate-x-1 transition-transform" />
+              <span className="font-bold text-xs uppercase tracking-widest">Terminate Session</span>
+            </button>
           </div>
         </div>
       </aside>
 
-      {/* 3. Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 lg:ml-64">
-        {/* Top Header Bar */}
         <header className="sticky top-0 z-40 bg-glacier-900/40 backdrop-blur-md border-b border-white/5 px-6 py-4 flex justify-between items-center">
           <div className="flex items-center gap-4">
-            <button
-              className="lg:hidden p-2 text-slate-400"
-              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            >
+            <button className="lg:hidden p-2 text-slate-400" onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}>
               {isMobileMenuOpen ? <X /> : <Menu />}
             </button>
             <div className="hidden lg:block text-xs font-bold text-slate-500 uppercase tracking-widest">
               Security Control Plane v1.0
             </div>
           </div>
-
-          {/* Integrated Device Heartbeat for Continuous Verification */}
           <PostureHeartbeat />
         </header>
-
-        {/* Dynamic Page Content */}
-        <main className="p-6 lg:p-10 overflow-y-auto">
-          {children}
-        </main>
+        <main className="p-6 lg:p-10 overflow-y-auto">{children}</main>
       </div>
     </div>
   );
 };
 
-/**
- * Main App Component
- */
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Public Authentication Portal */}
+        <Route path="/" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
-
-        {/* Dashboard & Security Modules: All wrapped in Protection and Glacier Layout */}
-        <Route path="/" element={
-          <ProtectedRoute>
-            <GlacierLayout><Dashboard /></GlacierLayout>
-          </ProtectedRoute>
-        } />
-
-        <Route path="/identity" element={
-          <ProtectedRoute>
-            <GlacierLayout><IdentityManagement /></GlacierLayout>
-          </ProtectedRoute>
-        } />
-
-        <Route path="/mobile" element={
-          <ProtectedRoute>
-            <GlacierLayout><MobileSecurity /></GlacierLayout>
-          </ProtectedRoute>
-        } />
-
-        <Route path="/network" element={
-          <ProtectedRoute>
-            <GlacierLayout><NetworkSegments /></GlacierLayout>
-          </ProtectedRoute>
-        } />
-
-        <Route path="/policies" element={
-          <ProtectedRoute>
-            <GlacierLayout><AccessPolicies /></GlacierLayout>
-          </ProtectedRoute>
-        } />
-
-        <Route path="/logs" element={
-          <ProtectedRoute>
-            <GlacierLayout><AuditLogs /></GlacierLayout>
-          </ProtectedRoute>
-        } />
-
-        {/* 404 Redirect to Dashboard */}
-        <Route path="*" element={<Link to="/" className="text-icy-accent p-10 block">Page not found. Return to Dashboard.</Link>} />
+        <Route path="/dashboard" element={<ProtectedRoute><GlacierLayout><Dashboard /></GlacierLayout></ProtectedRoute>} />
+        <Route path="/identity" element={<ProtectedRoute><GlacierLayout><IdentityManagement /></GlacierLayout></ProtectedRoute>} />
+        <Route path="/mobile" element={<ProtectedRoute><GlacierLayout><MobileSecurity /></GlacierLayout></ProtectedRoute>} />
+        <Route path="/network" element={<ProtectedRoute><GlacierLayout><NetworkSegments /></GlacierLayout></ProtectedRoute>} />
+        <Route path="/policies" element={<ProtectedRoute><GlacierLayout><AccessPolicies /></GlacierLayout></ProtectedRoute>} />
+        <Route path="/logs" element={<ProtectedRoute><GlacierLayout><AuditLogs /></GlacierLayout></ProtectedRoute>} />
+        <Route path="*" element={<Link to="/" className="text-icy-accent p-10 block">Session Invalid. Return to Terminal.</Link>} />
       </Routes>
     </BrowserRouter>
   );

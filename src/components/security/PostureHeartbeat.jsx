@@ -1,40 +1,37 @@
 import React, { useEffect, useState } from 'react';
 import api, { DEVICE_ID } from '../../lib/api';
-import { ShieldCheck, ShieldAlert } from 'lucide-react';
 
 const PostureHeartbeat = () => {
-    const [status, setStatus] = useState('VERIFYING');
+    const [status, setStatus] = useState('SYNCING');
 
-    const sendHeartbeat = async () => {
+    const checkPosture = async () => {
         try {
-            // Data matches DevicePostureDTO.java
-            const postureData = {
+            // These values should ideally come from a local agent or browser API
+            const payload = {
                 deviceId: DEVICE_ID,
-                osType: "Windows 11",
-                osVersion: "10.0.22631",
-                firewallEnabled: true,
-                diskEncrypted: true,
+                osType: navigator.platform,
+                firewallEnabled: true, // Local check logic
+                diskEncrypted: true,   // Local check logic
                 antivirusEnabled: true
             };
 
-            const response = await api.post('/device/heartbeat', postureData);
-            setStatus(response.data.status); // 'COMPLIANT'
+            const res = await api.post('/device/heartbeat', payload); // Hits DeviceController.java
+            setStatus(res.data.status);
         } catch (err) {
             setStatus('NON_COMPLIANT');
         }
     };
 
     useEffect(() => {
-        sendHeartbeat();
-        const interval = setInterval(sendHeartbeat, 30000); // Pulse every 30s
-        return () => clearInterval(interval);
+        checkPosture();
+        const timer = setInterval(checkPosture, 30000);
+        return () => clearInterval(timer);
     }, []);
 
     return (
-        <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold ${status === 'COMPLIANT' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-rose-500/10 border-rose-500/30 text-rose-400'
+        <div className={`px-3 py-1 rounded-full border text-[10px] font-bold ${status === 'COMPLIANT' ? 'border-emerald-500/30 text-emerald-400' : 'border-rose-500/30 text-rose-400'
             }`}>
-            {status === 'COMPLIANT' ? <ShieldCheck size={14} /> : <ShieldAlert size={14} />}
-            {status}
+            • SYSTEM {status}
         </div>
     );
 };
