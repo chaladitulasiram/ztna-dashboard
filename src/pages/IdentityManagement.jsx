@@ -1,87 +1,43 @@
 import React from 'react';
-import { Search, Filter, ShieldCheck, ShieldAlert, MoreVertical } from 'lucide-react';
-
-const UserRow = ({ name, email, role, status, mfa }) => (
-    <tr className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors">
-        <td className="py-4 px-4">
-            <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-purple-500 to-blue-500 flex items-center justify-center font-bold text-xs">
-                    {name.split(' ').map(n => n[0]).join('')}
-                </div>
-                <div>
-                    <p className="text-sm font-medium text-white">{name}</p>
-                    <p className="text-xs text-slate-500">{email}</p>
-                </div>
-            </div>
-        </td>
-        <td className="py-4 px-4">
-            <span className="text-xs font-medium px-2 py-1 rounded bg-slate-800 text-slate-300 border border-slate-700">
-                {role}
-            </span>
-        </td>
-        <td className="py-4 px-4">
-            <div className="flex items-center gap-2">
-                {mfa ? (
-                    <><ShieldCheck size={14} className="text-emerald-400" /> <span className="text-xs text-emerald-400">Enabled</span></>
-                ) : (
-                    <><ShieldAlert size={14} className="text-rose-400" /> <span className="text-xs text-rose-400">Disabled</span></>
-                )}
-            </div>
-        </td>
-        <td className="py-4 px-4 text-right">
-            <button className="text-slate-500 hover:text-white">
-                <MoreVertical size={18} />
-            </button>
-        </td>
-    </tr>
-);
+import { supabase } from '../lib/auth';
+import { User, ShieldCheck, Mail, Fingerprint } from 'lucide-react';
 
 const IdentityManagement = () => {
-    const users = [
-        { name: "Admin User", email: "admin@ztna.io", role: "Super Admin", mfa: true },
-        { name: "John Doe", email: "john@company.com", role: "Developer", mfa: false },
-        { name: "Jane Smith", email: "jane@company.com", role: "Security Analyst", mfa: true },
-    ];
+    // Get the user from Supabase session
+    const user = supabase.auth.getUser();
 
     return (
-        <div className="space-y-6">
-            <header>
-                <h1 className="text-2xl font-bold text-white">Identity Management</h1>
-                <p className="text-slate-400">Manage user identities and access privileges</p>
-            </header>
+        <div className="space-y-8 max-w-4xl">
+            <h1 className="text-3xl font-bold text-white italic uppercase">Verified Identities</h1>
 
-            <div className="flex flex-col md:flex-row gap-4">
-                <div className="relative flex-1">
-                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" size={18} />
-                    <input
-                        type="text"
-                        placeholder="Search users..."
-                        className="w-full bg-slate-900/50 border border-slate-800 rounded-xl py-2 pl-10 pr-4 focus:outline-none focus:border-purple-500/50 transition-all text-sm"
-                    />
+            <div className="glacier-card p-8 rounded-3xl border border-white/10 flex flex-col md:flex-row gap-8 items-center">
+                <div className="w-24 h-24 bg-gradient-to-br from-icy-accent to-blue-600 rounded-3xl flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <User size={48} className="text-glacier-950" />
                 </div>
-                <button className="flex items-center gap-2 bg-slate-800 px-4 py-2 rounded-xl text-sm font-medium hover:bg-slate-700 transition-all">
-                    <Filter size={18} />
-                    Filter
-                </button>
-            </div>
 
-            <div className="bg-slate-900/40 border border-slate-800 rounded-2xl overflow-hidden">
-                <table className="w-full text-left border-collapse">
-                    <thead>
-                        <tr className="bg-slate-800/30 text-slate-400 text-xs uppercase tracking-wider">
-                            <th className="py-4 px-4 font-semibold">User</th>
-                            <th className="py-4 px-4 font-semibold">Role</th>
-                            <th className="py-4 px-4 font-semibold">MFA Status</th>
-                            <th className="py-4 px-4 text-right font-semibold">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {users.map((user, idx) => <UserRow key={idx} {...user} />)}
-                    </tbody>
-                </table>
+                <div className="flex-1 space-y-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase tracking-widest">
+                        <ShieldCheck size={12} /> MFA Verified Identity
+                    </div>
+                    <h2 className="text-2xl font-bold text-white">{user?.email || 'Authenticated User'}</h2>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <InfoTag icon={Mail} label="Email" value={user?.email} />
+                        <InfoTag icon={Fingerprint} label="Provider" value="Supabase Auth" />
+                    </div>
+                </div>
             </div>
         </div>
     );
 };
+
+const InfoTag = ({ icon: Icon, label, value }) => (
+    <div className="flex items-center gap-3 p-3 bg-white/5 rounded-2xl border border-white/5">
+        <Icon size={16} className="text-slate-500" />
+        <div>
+            <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">{label}</p>
+            <p className="text-sm text-slate-200 font-mono">{value}</p>
+        </div>
+    </div>
+);
 
 export default IdentityManagement;

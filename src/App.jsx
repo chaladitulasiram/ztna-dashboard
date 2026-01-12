@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 
 // Services & Components
-import { authService } from './lib/auth';
+import { authService } from './lib/Auth'; // Capital 'A'
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import PostureHeartbeat from './components/security/PostureHeartbeat';
 

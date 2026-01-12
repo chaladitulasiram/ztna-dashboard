@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { authService } from '../lib/auth'; // Ensure lowercase path
+import { authService } from '../lib/Auth'; // Capital 'A'// Ensure lowercase path
 import { Shield, Lock, Mail, ArrowRight, UserPlus } from 'lucide-react';
 
 const Auth = () => {
