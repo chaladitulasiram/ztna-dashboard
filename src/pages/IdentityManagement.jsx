@@ -1,5 +1,5 @@
 import React from 'react';
-import { supabase } from '../lib/auth';
+import { supabase } from "../lib/Auth"; // Capital 'A'
 import { User, ShieldCheck, Mail, Fingerprint } from 'lucide-react';
 
 const IdentityManagement = () => {

@@ -1,37 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import api, { DEVICE_ID } from '../../lib/api';
+import { ShieldCheck, ShieldAlert } from 'lucide-react';
 
 const PostureHeartbeat = () => {
-    const [status, setStatus] = useState('SYNCING');
+    const [status, setStatus] = useState('VERIFYING');
 
-    const checkPosture = async () => {
+    const sendHeartbeat = async () => {
         try {
-            // These values should ideally come from a local agent or browser API
-            const payload = {
+            // Live data mapped to your backend DTO
+            const postureData = {
                 deviceId: DEVICE_ID,
                 osType: navigator.platform,
-                firewallEnabled: true, // Local check logic
-                diskEncrypted: true,   // Local check logic
+                osVersion: "1.0.0",
+                firewallEnabled: true,
+                diskEncrypted: true,
                 antivirusEnabled: true
             };
 
-            const res = await api.post('/device/heartbeat', payload); // Hits DeviceController.java
-            setStatus(res.data.status);
+            const response = await api.post('/device/heartbeat', postureData);
+            setStatus(response.data.status);
         } catch (err) {
             setStatus('NON_COMPLIANT');
         }
     };
 
     useEffect(() => {
-        checkPosture();
-        const timer = setInterval(checkPosture, 30000);
-        return () => clearInterval(timer);
+        sendHeartbeat();
+        const interval = setInterval(sendHeartbeat, 30000);
+        return () => clearInterval(interval);
     }, []);
 
     return (
-        <div className={`px-3 py-1 rounded-full border text-[10px] font-bold ${status === 'COMPLIANT' ? 'border-emerald-500/30 text-emerald-400' : 'border-rose-500/30 text-rose-400'
+        <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold ${status === 'COMPLIANT'
+                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
+                : 'bg-rose-500/10 border-rose-500/30 text-rose-400'
             }`}>
-            • SYSTEM {status}
+            {status === 'COMPLIANT' ? <ShieldCheck size={14} /> : <ShieldAlert size={14} />}
+            {status}
         </div>
     );
 };

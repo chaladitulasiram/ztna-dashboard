@@ -1,10 +1,10 @@
 import axios from 'axios';
 
-// Hardware ID verified by backend DevicePostureFilter
+// Hardware ID required by your backend's DevicePostureFilter
 export const DEVICE_ID = 'dev-win-11-prod-01';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080/api', // Matches server.port in application.properties
+    baseURL: 'http://localhost:8080/api', // Matches your server.port
 });
 
 api.interceptors.request.use((config) => {
@@ -12,7 +12,7 @@ api.interceptors.request.use((config) => {
     if (token) {
         config.headers.Authorization = `Bearer ${token}`;
     }
-    // Mandatory ZTNA header
+    // Mandatory security header
     config.headers['X-Device-Id'] = DEVICE_ID;
     return config;
 });

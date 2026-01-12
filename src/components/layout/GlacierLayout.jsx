@@ -10,6 +10,16 @@ const GlacierLayout = ({ children }) => {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
+    // src/components/layout/GlacierLayout.jsx
+    const menuItems = [
+        { icon: LayoutDashboard, label: 'Dashboard', path: '/' },
+        { icon: Shield, label: 'Identity Mgmt', path: '/identity' },
+        { icon: Smartphone, label: 'Mobile Security', path: '/mobile' },
+        { icon: Network, label: 'Network Segments', path: '/network' },
+        { icon: ShieldCheck, label: 'Access Policies', path: '/policies' },
+        { icon: FileText, label: 'Audit Logs', path: '/logs' },
+        { icon: Settings, label: 'Settings', path: '/settings' },
+    ];
     return (
         <div className="relative min-h-screen text-slate-200">
             {/* Parallax Orbs */}
