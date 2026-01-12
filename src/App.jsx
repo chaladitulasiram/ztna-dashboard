@@ -1,10 +1,10 @@
-// src/App.jsx
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import ProtectedRoute from './components/auth/ProtectedRoute';
 import GlacierLayout from './components/layout/GlacierLayout';
 
 // Page Imports
+import Landing from './pages/Landing';
 import Auth from './pages/Auth';
 import Dashboard from './pages/Dashboard';
 import MobileSecurity from './pages/MobileSecurity';
@@ -17,12 +17,12 @@ export default function App() {
   return (
     <BrowserRouter>
       <Routes>
-        {/* Identity Portal - Public */}
+        {/* PUBLIC ROUTES */}
+        <Route path="/" element={<Landing />} />
         <Route path="/auth" element={<Auth />} />
 
-        {/* Protected Dashboard Shell */}
-        {/* Ensure the path here matches the 'to' prop in Sidebar items */}
-        <Route path="/" element={
+        {/* PROTECTED ROUTES */}
+        <Route path="/dashboard" element={
           <ProtectedRoute>
             <GlacierLayout><Dashboard /></GlacierLayout>
           </ProtectedRoute>
@@ -58,7 +58,7 @@ export default function App() {
           </ProtectedRoute>
         } />
 
-        <Route path="*" element={<Link to="/" className="text-icy-accent p-10 block">Invalid Session. Return to Dashboard.</Link>} />
+        <Route path="*" element={<Link to="/" className="text-icy-accent p-10 block">Page Not Found. Return Home.</Link>} />
       </Routes>
     </BrowserRouter>
   );
