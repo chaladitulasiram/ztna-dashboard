@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import PostureHeartbeat from '../security/PostureHeartbeat';
 import { authService } from '../../lib/auth';
+import ParticleBackground from './ParticleBackground';
 
 const GlacierLayout = ({ children }) => {
     const [offset, setOffset] = useState(0);
@@ -67,6 +68,9 @@ const GlacierLayout = ({ children }) => {
                 <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/10 to-transparent animate-scan" />
             </div>
 
+            {/* Particle Background for Futuristic Depth */}
+            <ParticleBackground />
+
             {/* Cyberpunk Sidebar */}
             <aside className="fixed inset-y-0 left-0 w-64 bg-black/60 backdrop-blur-2xl border-r border-cyan-500/20 p-6 flex flex-col z-50">
                 {/* Logo */}
@@ -85,26 +89,30 @@ const GlacierLayout = ({ children }) => {
 
                 {/* Navigation */}
                 <nav className="space-y-2 flex-1 overflow-y-auto pr-2 custom-scrollbar">
-                    {menuItems.map((item) => {
+                    {menuItems.map((item, index) => {
                         const isActive = location.pathname === item.path;
                         return (
                             <Link
                                 key={item.path}
                                 to={item.path}
-                                className={`group flex items-center gap-3 px-4 py-3 rounded transition-all duration-300 relative overflow-hidden ${isActive
+                                className={`group flex items-center gap-3 px-4 py-3 rounded transition-all duration-500 relative overflow-hidden transform ${isActive
                                     ? 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/50'
-                                    : 'text-gray-400 hover:bg-cyan-500/5 hover:text-cyan-400 border border-transparent hover:border-cyan-500/30'
+                                    : 'text-gray-400 hover:bg-cyan-500/5 hover:text-cyan-400 border border-transparent hover:border-cyan-500/30 hover:translate-x-1'
                                     }`}
-                                style={isActive ? { boxShadow: '0 0 20px rgba(0, 255, 255, 0.2)' } : {}}
+                                style={{
+                                    boxShadow: isActive ? '0 0 20px rgba(0, 255, 255, 0.2)' : 'none',
+                                    animationDelay: `${index * 50}ms`
+                                }}
                             >
                                 {isActive && (
                                     <>
-                                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500" />
-                                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500" />
+                                        <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-cyan-500 animate-pulse" />
+                                        <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-cyan-500 animate-pulse" />
+                                        <div className="absolute inset-0 bg-gradient-to-r from-cyan-500/0 via-cyan-500/10 to-cyan-500/0 animate-shimmer-effect" style={{ backgroundSize: '200% 100%' }} />
                                     </>
                                 )}
-                                <item.icon size={18} className={`transition-transform duration-300 ${isActive ? 'scale-110' : 'group-hover:scale-110'}`} />
-                                <span className="font-bold text-xs uppercase tracking-widest">{item.label}</span>
+                                <item.icon size={18} className={`transition-all duration-300 ${isActive ? 'scale-110 text-cyan-400' : 'group-hover:scale-125 group-hover:rotate-6'}`} style={{ filter: isActive ? 'drop-shadow(0 0 8px rgba(0, 255, 255, 0.8))' : 'none' }} />
+                                <span className="font-bold text-xs uppercase tracking-widest relative z-10">{item.label}</span>
                             </Link>
                         );
                     })}
