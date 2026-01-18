@@ -1,0 +1,87 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Background -->
+  <rect width="512" height="512" fill="#000000"/>
+  
+  <!-- Grid Pattern -->
+  <defs>
+    <pattern id="grid" width="32" height="32" patternUnits="userSpaceOnUse">
+      <path d="M 32 0 L 0 0 0 32" fill="none" stroke="#00ffff" stroke-width="0.5" opacity="0.1"/>
+    </pattern>
+    
+    <!-- Glow Filters -->
+    <filter id="glow-cyan">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <filter id="glow-pink">
+      <feGaussianBlur stdDeviation="4" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <rect width="512" height="512" fill="url(#grid)"/>
+  
+  <!-- Main Shield -->
+  <path d="M 256 80 L 180 120 L 180 260 Q 180 360 256 420 Q 332 360 332 260 L 332 120 Z" 
+        fill="none" 
+        stroke="url(#gradient-cyan-pink)" 
+        stroke-width="8" 
+        filter="url(#glow-cyan)"/>
+  
+  <!-- Inner Shield -->
+  <path d="M 256 120 L 200 150 L 200 260 Q 200 340 256 380 Q 312 340 312 260 L 312 150 Z" 
+        fill="rgba(0, 255, 255, 0.1)" 
+        stroke="#00ffff" 
+        stroke-width="4" 
+        filter="url(#glow-cyan)"/>
+  
+  <!-- Circuit Lines -->
+  <g stroke="#ff00ff" stroke-width="3" fill="none" opacity="0.8" filter="url(#glow-pink)">
+    <path d="M 220 180 L 240 180 L 240 200"/>
+    <path d="M 292 180 L 272 180 L 272 200"/>
+    <path d="M 220 220 L 240 220 L 240 240"/>
+    <path d="M 292 220 L 272 220 L 272 240"/>
+  </g>
+  
+  <!-- Circuit Nodes -->
+  <g fill="#00ffff" filter="url(#glow-cyan)">
+    <circle cx="240" cy="180" r="3"/>
+    <circle cx="272" cy="180" r="3"/>
+    <circle cx="240" cy="220" r="3"/>
+    <circle cx="272" cy="220" r="3"/>
+    <circle cx="256" cy="256" r="4"/>
+  </g>
+  
+  <!-- Lock Symbol -->
+  <g transform="translate(256, 260)">
+    <rect x="-12" y="-8" width="24" height="20" rx="2" 
+          fill="none" stroke="#00ffff" stroke-width="3" filter="url(#glow-cyan)"/>
+    <path d="M -8 -8 L -8 -16 Q -8 -24 0 -24 Q 8 -24 8 -16 L 8 -8" 
+          fill="none" stroke="#ff00ff" stroke-width="3" filter="url(#glow-pink)"/>
+    <circle cx="0" cy="2" r="3" fill="#00ffff"/>
+  </g>
+  
+  <!-- Corner Brackets -->
+  <g stroke="#00ffff" stroke-width="3" fill="none" opacity="0.6">
+    <path d="M 100 100 L 80 100 L 80 120"/>
+    <path d="M 412 100 L 432 100 L 432 120"/>
+    <path d="M 100 412 L 80 412 L 80 392"/>
+    <path d="M 412 412 L 432 412 L 432 392"/>
+  </g>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="gradient-cyan-pink" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#00ffff;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#ff00ff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#00ffff;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+</svg>

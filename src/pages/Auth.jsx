@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { authService } from '../lib/auth';
 import { Shield, ArrowRight, UserPlus, Lock, Mail, Sparkles, Eye, EyeOff, Terminal } from 'lucide-react';
+import SuccessModal from '../components/layout/SuccessModal';
 
 const Auth = () => {
     const [isSignUp, setIsSignUp] = useState(false);
@@ -10,6 +11,7 @@ const Auth = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [showPassword, setShowPassword] = useState(false);
+    const [showSuccessModal, setShowSuccessModal] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
@@ -20,8 +22,12 @@ const Auth = () => {
         try {
             if (isSignUp) {
                 await authService.register(email, password);
-                alert("Registration successful! Verify your email.");
-                setIsSignUp(false);
+                setShowSuccessModal(true);
+                setEmail('');
+                setPassword('');
+                setTimeout(() => {
+                    setIsSignUp(false);
+                }, 2000);
             } else {
                 await authService.login(email, password);
                 navigate('/dashboard');
@@ -190,6 +196,13 @@ const Auth = () => {
                     <div>Ver 2.0.77</div>
                 </div>
             </div>
+
+            {/* Success Toast */}
+            <SuccessModal
+                isOpen={showSuccessModal}
+                onClose={() => setShowSuccessModal(false)}
+                message="Registration successful! Check your email to verify."
+            />
         </div>
     );
 };
