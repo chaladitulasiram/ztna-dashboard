@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 import ProtectedRoute from './components/auth/ProtectedRoute';
-import GlacierLayout from './components/layout/GlacierLayout';
+import MainLayout from './components/layout/MainLayout';
 
 // Page Imports
 import Landing from './pages/Landing';
@@ -24,41 +24,41 @@ export default function App() {
         {/* PROTECTED ROUTES */}
         <Route path="/dashboard" element={
           <ProtectedRoute>
-            <GlacierLayout><Dashboard /></GlacierLayout>
+            <MainLayout><Dashboard /></MainLayout>
           </ProtectedRoute>
         } />
 
         <Route path="/identity" element={
           <ProtectedRoute>
-            <GlacierLayout><IdentityManagement /></GlacierLayout>
+            <MainLayout><IdentityManagement /></MainLayout>
           </ProtectedRoute>
         } />
 
         <Route path="/mobile" element={
           <ProtectedRoute>
-            <GlacierLayout><MobileSecurity /></GlacierLayout>
+            <MainLayout><MobileSecurity /></MainLayout>
           </ProtectedRoute>
         } />
 
         <Route path="/network" element={
           <ProtectedRoute>
-            <GlacierLayout><NetworkSegments /></GlacierLayout>
+            <MainLayout><NetworkSegments /></MainLayout>
           </ProtectedRoute>
         } />
 
         <Route path="/policies" element={
           <ProtectedRoute>
-            <GlacierLayout><AccessPolicies /></GlacierLayout>
+            <MainLayout><AccessPolicies /></MainLayout>
           </ProtectedRoute>
         } />
 
         <Route path="/logs" element={
           <ProtectedRoute>
-            <GlacierLayout><AuditLogs /></GlacierLayout>
+            <MainLayout><AuditLogs /></MainLayout>
           </ProtectedRoute>
         } />
 
-        <Route path="*" element={<Link to="/" className="text-icy-accent p-10 block">Page Not Found. Return Home.</Link>} />
+        <Route path="*" element={<Link to="/" className="text-blue-500 p-10 block">Page Not Found. Return Home.</Link>} />
       </Routes>
     </BrowserRouter>
   );

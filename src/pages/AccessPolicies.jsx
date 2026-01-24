@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { ShieldCheck, ShieldAlert, Plus, MoreVertical, Clock, Globe, Laptop, Sparkles, AlertTriangle, Shield } from 'lucide-react';
+import { ShieldCheck, ShieldWarning, Plus, DotsThreeVertical, Clock, Globe, Laptop, Warning, CheckCircle } from '@phosphor-icons/react';
 import api from '../lib/api';
 
 const AccessPolicies = () => {
@@ -24,41 +24,34 @@ const AccessPolicies = () => {
         };
 
         fetchPolicies();
-        const interval = setInterval(fetchPolicies, 60000); // Refresh every 60 seconds
+        const interval = setInterval(fetchPolicies, 60000);
         return () => clearInterval(interval);
     }, []);
 
     return (
-        <div className="space-y-8 font-mono animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="space-y-8 font-sans animate-fade-in">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2"
-                        style={{
-                            background: 'linear-gradient(to right, #00ffff, #ff00ff)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            textShadow: '0 0 30px rgba(0, 255, 255, 0.3)'
-                        }}>
+                    <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
                         Access Policies
                     </h1>
-                    <p className="text-cyan-400 font-bold tracking-widest flex items-center gap-2">
-                        <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                        PBAC ENGINE {error ? <span className="text-pink-400">(OFFLINE)</span> : 'ONLINE'}
-                    </p>
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span className={`w-2 h-2 rounded-full ${error ? 'bg-[#FF453A]' : 'bg-[#30D158]'} animate-pulse`} />
+                        PBAC Engine {error ? 'Offline' : 'Online'}
+                    </div>
                 </div>
-                <button className="group px-6 py-3 bg-black border border-cyan-500/50 text-cyan-400 font-black uppercase hover:bg-cyan-500 hover:text-black transition-all flex items-center gap-2"
-                    style={{ boxShadow: '0 0 20px rgba(0, 255, 255, 0.2)' }}>
-                    <Plus size={20} className="group-hover:rotate-90 transition-transform" />
+                <button className="px-5 py-2.5 rounded-full bg-white text-black font-medium text-sm hover:scale-105 transition-all flex items-center gap-2 shadow-lg shadow-white/10">
+                    <Plus size={18} weight="bold" />
                     <span>Create Policy</span>
                 </button>
             </div>
 
             {/* Error Banner */}
             {error && (
-                <div className="p-4 bg-pink-500/10 border border-pink-500/50 rounded flex items-center gap-3 text-pink-500">
-                    <AlertTriangle size={20} />
-                    <div className="text-xs uppercase font-bold tracking-wider">
+                <div className="p-4 bg-[#FF453A]/10 border border-[#FF453A]/20 rounded-2xl flex items-center gap-3 text-[#FF453A]">
+                    <Warning size={20} weight="fill" />
+                    <div className="text-sm font-medium">
                         {error}. Unable to display policies.
                     </div>
                 </div>
@@ -68,55 +61,53 @@ const AccessPolicies = () => {
             <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
                 {(loading && policies.length === 0) ? (
                     [1, 2, 3].map((i) => (
-                        <div key={i} className="h-64 bg-black/50 border border-cyan-500/20 rounded animate-pulse" />
+                        <div key={i} className="h-64 bg-[#161617]/60 border border-white/5 rounded-2xl animate-pulse" />
                     ))
                 ) : (
-                    policies.map((p) => <CyberPolicyCard key={p.id} {...p} />)
+                    policies.map((p) => <PolicyCard key={p.id} {...p} />)
                 )}
             </div>
         </div>
     );
 };
 
-const CyberPolicyCard = ({ title, description, action, priority, conditions, active }) => {
+const PolicyCard = ({ title, description, action, priority, conditions, active }) => {
     return (
-        <div className={`bg-black/50 backdrop-blur-xl border ${active ? 'border-cyan-500/50' : 'border-gray-800'} p-6 rounded relative overflow-hidden group hover:scale-[1.02] transition-transform duration-300`}
-            style={{ boxShadow: active ? '0 0 20px rgba(0, 255, 255, 0.1)' : 'none' }}>
-
-            {/* Corner Brackets */}
-            <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-cyan-500/30 group-hover:border-cyan-500 transition-colors" />
-            <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-cyan-500/30 group-hover:border-cyan-500 transition-colors" />
+        <div className={`p-6 rounded-2xl bg-[#161617]/60 backdrop-blur-xl border hover:border-[#2997FF]/30 transition-all duration-300 group hover:-translate-y-1 ${active ? 'border-white/5' : 'border-white/5 opacity-75'}`}>
 
             <div className="flex justify-between items-start mb-4">
-                <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded border ${action === 'Allow' ? 'border-green-500/50 bg-green-500/10 text-green-400' : 'border-pink-500/50 bg-pink-500/10 text-pink-400'}`}>
-                        {action === 'Allow' ? <ShieldCheck size={20} /> : <ShieldAlert size={20} />}
+                <div className="flex items-center gap-4">
+                    <div className={`p-2.5 rounded-xl ${action === 'Allow'
+                            ? 'bg-[#30D158]/10 text-[#30D158]'
+                            : 'bg-[#FF453A]/10 text-[#FF453A]'
+                        }`}>
+                        {action === 'Allow' ? <ShieldCheck size={20} weight="fill" /> : <ShieldWarning size={20} weight="fill" />}
                     </div>
                     <div>
-                        <h3 className="text-lg font-black text-white uppercase tracking-tight">{title}</h3>
-                        <div className="flex items-center gap-2 text-[10px] uppercase tracking-widest text-gray-500">
-                            <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-cyan-400 animate-pulse' : 'bg-gray-600'}`} />
+                        <h3 className="text-lg font-semibold text-white tracking-tight">{title}</h3>
+                        <div className="flex items-center gap-2 text-xs font-medium text-gray-500 mt-0.5">
+                            <span className={`w-1.5 h-1.5 rounded-full ${active ? 'bg-[#30D158]' : 'bg-gray-500'}`} />
                             Priority: {priority}
                         </div>
                     </div>
                 </div>
-                <button className="text-gray-500 hover:text-cyan-400 transition-colors">
-                    <MoreVertical size={18} />
+                <button className="text-gray-500 hover:text-white transition-colors">
+                    <DotsThreeVertical size={24} weight="bold" />
                 </button>
             </div>
 
-            <p className="text-xs text-gray-400 mb-6 font-mono leading-relaxed border-l-2 border-gray-800 pl-3">
+            <p className="text-sm text-gray-400 mb-6 leading-relaxed">
                 {description}
             </p>
 
             <div className="space-y-3">
-                <div className="text-[10px] font-bold text-cyan-500 uppercase tracking-widest">Conditions Protocol</div>
+                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Conditions</div>
                 <div className="flex flex-wrap gap-2">
                     {conditions.map((condition, idx) => {
                         const Icon = condition.type === 'geo' ? Globe : condition.type === 'device' ? Laptop : Clock;
                         return (
-                            <div key={idx} className="flex items-center gap-2 px-3 py-1.5 bg-cyan-500/5 border border-cyan-500/20 hover:border-cyan-500/50 rounded text-[10px] text-cyan-300 transition-all font-mono uppercase">
-                                <Icon size={12} className="text-cyan-400" />
+                            <div key={idx} className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/5 rounded-lg text-xs text-gray-300 font-medium">
+                                <Icon size={14} className="text-[#2997FF]" />
                                 <span>{condition.label}</span>
                             </div>
                         );
@@ -124,11 +115,11 @@ const CyberPolicyCard = ({ title, description, action, priority, conditions, act
                 </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-gray-800 flex justify-between items-center">
-                <span className={`text-xs font-bold uppercase tracking-widest ${active ? 'text-green-400' : 'text-gray-500'}`}>
+            <div className="mt-6 pt-4 border-t border-white/5 flex justify-between items-center">
+                <span className={`text-xs font-semibold uppercase tracking-wide ${active ? 'text-[#30D158]' : 'text-gray-500'}`}>
                     {active ? 'Active' : 'Disabled'}
                 </span>
-                <button className="text-xs font-bold text-cyan-400 hover:text-white transition-colors uppercase tracking-wider flex items-center gap-1">
+                <button className="text-xs font-semibold text-[#2997FF] hover:text-[#2997FF]/80 transition-colors">
                     Edit Rule
                 </button>
             </div>
@@ -137,3 +128,4 @@ const CyberPolicyCard = ({ title, description, action, priority, conditions, act
 };
 
 export default AccessPolicies;
+

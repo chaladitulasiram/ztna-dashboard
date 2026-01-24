@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Smartphone, Lock, RotateCcw, MapPin, Bell, Trash2, Sparkles, AlertTriangle, CheckCircle } from 'lucide-react';
+import { DeviceMobile, LockKey, ArrowCounterClockwise, MapPin, Bell, Trash, ShieldCheck, Warning, CheckCircle } from '@phosphor-icons/react';
 import api from '../lib/api';
 
 const MobileSecurity = () => {
@@ -26,7 +26,7 @@ const MobileSecurity = () => {
         };
 
         fetchDevices();
-        const interval = setInterval(fetchDevices, 30000); // Refresh every 30 seconds
+        const interval = setInterval(fetchDevices, 30000);
         return () => clearInterval(interval);
     }, []);
 
@@ -57,34 +57,26 @@ const MobileSecurity = () => {
         }
     };
 
-
-
     return (
-        <div className="space-y-8 font-mono animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="space-y-8 font-sans animate-fade-in">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2"
-                        style={{
-                            background: 'linear-gradient(to right, #00ffff, #ff00ff)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            textShadow: '0 0 30px rgba(0, 255, 255, 0.3)'
-                        }}>
+                    <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
                         Mobile Fleet
                     </h1>
-                    <p className="text-cyan-400 font-bold tracking-widest flex items-center gap-2">
-                        <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                        MANAGING {devices.length} ENROLLED DEVICES
-                    </p>
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span className="w-2 h-2 bg-[#2997FF] rounded-full animate-pulse" />
+                        Managing {devices.length} Enrolled Devices
+                    </div>
                 </div>
             </div>
 
             {/* Error Banner */}
             {error && (
-                <div className="p-4 bg-pink-500/10 border border-pink-500/50 rounded flex items-center gap-3 text-pink-500">
-                    <AlertTriangle size={20} />
-                    <div className="text-xs uppercase font-bold tracking-wider">
+                <div className="p-4 bg-[#FF453A]/10 border border-[#FF453A]/20 rounded-2xl flex items-center gap-3 text-[#FF453A]">
+                    <Warning size={20} weight="fill" />
+                    <div className="text-sm font-medium">
                         {error}. Unable to display devices.
                     </div>
                 </div>
@@ -92,54 +84,48 @@ const MobileSecurity = () => {
 
             {/* Action Status Banner */}
             {actionStatus && (
-                <div className={`p-4 border rounded relative animate-in slide-in-from-top-4 flex items-center gap-3 ${actionStatus.type === 'success'
-                    ? 'border-green-500/50 bg-green-500/10 text-green-400'
-                    : 'border-red-500/50 bg-red-500/10 text-red-400'
+                <div className={`p-4 border rounded-2xl relative animate-slide-up flex items-center gap-3 ${actionStatus.type === 'success'
+                    ? 'border-[#30D158]/20 bg-[#30D158]/10 text-[#30D158]'
+                    : 'border-[#FF453A]/20 bg-[#FF453A]/10 text-[#FF453A]'
                     }`}>
-                    {actionStatus.type === 'success' ? <CheckCircle size={20} /> : <AlertTriangle size={20} />}
-                    <span className="text-sm font-bold uppercase tracking-wider">{actionStatus.message}</span>
+                    {actionStatus.type === 'success' ? <CheckCircle size={20} weight="fill" /> : <Warning size={20} weight="fill" />}
+                    <span className="text-sm font-medium tracking-wide">{actionStatus.message}</span>
                 </div>
             )}
 
             {/* Device Card or Empty State */}
             {loading && devices.length === 0 ? (
-                <div className="h-64 bg-black/50 border border-cyan-500/20 rounded animate-pulse" />
+                <div className="h-64 bg-[#161617]/60 border border-white/5 rounded-2xl animate-pulse" />
             ) : devices.length === 0 ? (
-                <div className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded p-16 text-center">
-                    <Smartphone className="text-cyan-400/30 mx-auto mb-4" size={64} />
-                    <h3 className="text-xl font-black text-cyan-400/50 uppercase tracking-wider mb-2">
+                <div className="bg-[#161617]/60 backdrop-blur-xl border border-white/5 rounded-2xl p-16 text-center">
+                    <DeviceMobile className="text-gray-600 mx-auto mb-4" size={64} weight="thin" />
+                    <h3 className="text-lg font-semibold text-white mb-2">
                         No Devices Enrolled
                     </h3>
-                    <p className="text-gray-500 text-xs uppercase tracking-widest">
+                    <p className="text-gray-500 text-sm">
                         Connect devices to monitor security status
                     </p>
                 </div>
             ) : devices.map((device) => (
-                <div key={device.id} className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded relative overflow-hidden"
-                    style={{ boxShadow: '0 0 30px rgba(0, 255, 255, 0.1)' }}>
+                <div key={device.id} className="bg-[#161617]/60 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden hover:border-[#2997FF]/30 transition-colors duration-300">
 
-                    {/* Corner Brackets */}
-                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-500" />
-                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-500" />
-
-                    <div className="p-8 border-b border-cyan-500/20 flex flex-col md:flex-row justify-between items-center gap-6">
+                    <div className="p-8 border-b border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
                         <div className="flex items-center gap-6">
-                            <div className="w-16 h-16 bg-cyan-500/10 rounded-full flex items-center justify-center border border-cyan-500/50 relative group">
-                                <div className="absolute inset-0 bg-cyan-500/20 rounded-full animate-pulse" />
-                                <Smartphone className="text-cyan-400 relative z-10" size={32} />
+                            <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center text-gray-400">
+                                <DeviceMobile size={32} weight="fill" />
                             </div>
                             <div>
-                                <h3 className="text-2xl font-black text-white uppercase tracking-tight">{device.name}</h3>
-                                <p className="text-sm text-cyan-400/60 font-mono mt-1 uppercase tracking-widest">
+                                <h3 className="text-xl font-bold text-white tracking-tight">{device.name}</h3>
+                                <p className="text-sm text-gray-500 font-medium mt-1">
                                     Last seen: {device.lastSeen} • {device.osVersion}
                                 </p>
                             </div>
                         </div>
 
                         <div className="flex items-center gap-3">
-                            <div className={`px-4 py-2 rounded border uppercase font-bold text-xs tracking-widest ${device.status === 'Secure'
-                                ? 'border-green-500/50 bg-green-500/10 text-green-400'
-                                : 'border-red-500/50 bg-red-500/10 text-red-400'
+                            <div className={`px-4 py-1.5 rounded-full border text-xs font-semibold tracking-wide ${device.status === 'Secure'
+                                ? 'border-[#30D158]/20 bg-[#30D158]/10 text-[#30D158]'
+                                : 'border-[#FF453A]/20 bg-[#FF453A]/10 text-[#FF453A]'
                                 }`}>
                                 {device.status}
                             </div>
@@ -147,12 +133,12 @@ const MobileSecurity = () => {
                     </div>
 
                     <div className="p-8 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
-                        <ActionButton icon={Lock} label="Lock" onClick={() => executeAction(device.id, 'lock')} disabled={actionLoading} />
+                        <ActionButton icon={LockKey} label="Lock" onClick={() => executeAction(device.id, 'lock')} disabled={actionLoading} />
                         <ActionButton icon={MapPin} label="Locate" onClick={() => executeAction(device.id, 'locate')} disabled={actionLoading} />
                         <ActionButton icon={Bell} label="Ring" onClick={() => executeAction(device.id, 'ring')} disabled={actionLoading} />
-                        <ActionButton icon={RotateCcw} label="Restart" onClick={() => executeAction(device.id, 'restart')} disabled={actionLoading} />
+                        <ActionButton icon={ArrowCounterClockwise} label="Restart" onClick={() => executeAction(device.id, 'restart')} disabled={actionLoading} />
                         <ActionButton icon={Bell} label="Alert" onClick={() => executeAction(device.id, 'alert')} disabled={actionLoading} />
-                        <ActionButton icon={Trash2} label="Wipe" variant="danger" onClick={() => executeAction(device.id, 'wipe')} disabled={actionLoading} />
+                        <ActionButton icon={Trash} label="Wipe" variant="danger" onClick={() => executeAction(device.id, 'wipe')} disabled={actionLoading} />
                     </div>
                 </div>
             ))}
@@ -164,15 +150,16 @@ const ActionButton = ({ icon: Icon, label, variant = 'default', onClick, disable
     <button
         onClick={onClick}
         disabled={disabled}
-        className={`flex flex-col items-center justify-center p-6 rounded border transition-all duration-300 group relative overflow-hidden ${disabled ? 'opacity-50 cursor-not-allowed border-gray-800' :
+        className={`flex flex-col items-center justify-center p-4 rounded-xl border transition-all duration-200 group ${disabled ? 'opacity-50 cursor-not-allowed border-white/5 bg-transparent' :
             variant === 'danger'
-                ? 'border-pink-500/30 bg-pink-500/5 text-pink-400 hover:bg-pink-500/10 hover:border-pink-500 hover:shadow-[0_0_15px_rgba(236,72,153,0.3)]'
-                : 'border-cyan-500/30 bg-cyan-500/5 text-cyan-400 hover:bg-cyan-500/10 hover:border-cyan-500 hover:shadow-[0_0_15px_rgba(0,255,255,0.3)]'
+                ? 'border-white/5 bg-white/5 hover:bg-[#FF453A]/10 hover:border-[#FF453A]/30 hover:text-[#FF453A] text-gray-400'
+                : 'border-white/5 bg-white/5 hover:bg-[#2997FF]/10 hover:border-[#2997FF]/30 hover:text-[#2997FF] text-gray-400'
             }`}
     >
-        <Icon size={24} className="mb-2 group-hover:scale-110 transition-transform" />
-        <span className="text-[10px] font-bold uppercase tracking-widest">{label}</span>
+        <Icon size={24} className="mb-2 transition-transform group-hover:scale-110" weight="duotone" />
+        <span className="text-[10px] font-bold uppercase tracking-wider">{label}</span>
     </button>
 );
 
 export default MobileSecurity;
+

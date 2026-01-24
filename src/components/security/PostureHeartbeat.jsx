@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api, { DEVICE_ID } from '../../lib/api';
-import { ShieldCheck, ShieldAlert } from 'lucide-react';
+import { ShieldCheck, ShieldWarning } from '@phosphor-icons/react';
 
 const PostureHeartbeat = () => {
     const [status, setStatus] = useState('VERIFYING');
@@ -31,12 +31,12 @@ const PostureHeartbeat = () => {
     }, []);
 
     return (
-        <div className={`flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-bold ${status === 'COMPLIANT'
-                ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-                : 'bg-rose-500/10 border-rose-500/30 text-rose-400'
+        <div className={`flex items-center gap-2 px-3 py-1.5 rounded-lg border text-xs font-semibold tracking-wide transition-colors duration-300 ${status === 'COMPLIANT'
+            ? 'bg-[#30D158]/10 border-[#30D158]/20 text-[#30D158]'
+            : 'bg-[#FF453A]/10 border-[#FF453A]/20 text-[#FF453A]'
             }`}>
-            {status === 'COMPLIANT' ? <ShieldCheck size={14} /> : <ShieldAlert size={14} />}
-            {status}
+            {status === 'COMPLIANT' ? <ShieldCheck size={16} weight="fill" /> : <ShieldWarning size={16} weight="fill" />}
+            <span>{status === 'COMPLIANT' ? 'Device Secure' : 'At Risk'}</span>
         </div>
     );
 };

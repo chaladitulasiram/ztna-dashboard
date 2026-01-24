@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import api from '../lib/api';
-import { Clock, FileText, Sparkles, TrendingUp, AlertTriangle } from 'lucide-react';
+import { Clock, FileText, Sparkle, TrendUp, Warning, CheckCircle, XCircle } from '@phosphor-icons/react';
 
 const AuditLogs = () => {
     const [logs, setLogs] = useState([]);
@@ -30,107 +30,93 @@ const AuditLogs = () => {
     }, []);
 
     return (
-        <div className="space-y-8 font-mono animate-in fade-in slide-in-from-bottom-8 duration-700">
+        <div className="space-y-8 font-sans animate-fade-in">
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2"
-                        style={{
-                            background: 'linear-gradient(to right, #00ffff, #ff00ff)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent',
-                            textShadow: '0 0 30px rgba(0, 255, 255, 0.3)'
-                        }}>
+                    <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
                         Live Audit Trail
                     </h1>
-                    <p className="text-cyan-400 font-bold tracking-widest flex items-center gap-2">
-                        <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                        ACCESS MONITORING ACTIVE
-                    </p>
-                </div>
-                <div className="px-5 py-3 rounded border border-cyan-500/30 bg-cyan-500/5 text-xs text-cyan-400 flex items-center gap-3 shadow-[0_0_20px_rgba(0,255,255,0.15)]">
-                    <div className="relative">
-                        <Clock size={16} />
-                        <div className="absolute -top-1 -right-1 w-2 h-2 bg-cyan-500 rounded-full animate-ping" />
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span className="w-2 h-2 bg-[#2997FF] rounded-full animate-pulse" />
+                        Access Monitoring Active
                     </div>
-                    <span className="font-bold uppercase tracking-widest">Live Sync</span>
+                </div>
+                <div className="px-3 py-1.5 rounded-lg border border-[#2997FF]/20 bg-[#2997FF]/10 text-[#2997FF] flex items-center gap-2 shadow-sm">
+                    <Clock size={16} weight="fill" />
+                    <span className="text-xs font-semibold uppercase tracking-wide">Live Sync</span>
                 </div>
             </div>
 
             {/* Error Banner */}
             {error && (
-                <div className="p-4 bg-pink-500/10 border border-pink-500/50 rounded flex items-center gap-3 text-pink-500">
-                    <AlertTriangle size={20} />
-                    <div className="text-xs uppercase font-bold tracking-wider">
+                <div className="p-4 bg-[#FF453A]/10 border border-[#FF453A]/20 rounded-2xl flex items-center gap-3 text-[#FF453A]">
+                    <Warning size={20} weight="fill" />
+                    <div className="text-sm font-medium">
                         {error}. Audit trail may be incomplete.
                     </div>
                 </div>
             )}
 
             {/* Data Table */}
-            <div className="bg-black/50 backdrop-blur-xl border border-cyan-500/30 rounded relative overflow-hidden"
-                style={{ boxShadow: '0 0 30px rgba(0, 255, 255, 0.1)' }}>
-
-                {/* Corner Brackets */}
-                <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-500" />
-                <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-500" />
-
+            <div className="bg-[#161617]/60 backdrop-blur-xl border border-white/5 rounded-2xl overflow-hidden hover:border-[#2997FF]/30 transition-colors duration-300">
                 <div className="overflow-x-auto">
                     <table className="w-full text-left">
-                        <thead className="bg-cyan-500/5 text-cyan-400 text-[10px] uppercase tracking-widest font-black border-b border-cyan-500/20">
+                        <thead className="bg-white/5 text-gray-400 text-xs font-semibold uppercase tracking-wide border-b border-white/5">
                             <tr>
-                                <th className="p-5">Timestamp</th>
-                                <th className="p-5">Resource</th>
-                                <th className="p-5">Identity</th>
-                                <th className="p-5">Outcome</th>
-                                <th className="p-5">Risk</th>
+                                <th className="p-6">Timestamp</th>
+                                <th className="p-6">Resource</th>
+                                <th className="p-6">Identity</th>
+                                <th className="p-6">Outcome</th>
+                                <th className="p-6">Risk Score</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-cyan-500/10">
+                        <tbody className="divide-y divide-white/5">
                             {loading && logs.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" className="p-12 text-center text-cyan-500/50">
+                                    <td colSpan="5" className="p-12 text-center text-gray-500">
                                         <div className="flex flex-col items-center gap-4">
-                                            <div className="w-8 h-8 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
-                                            <span className="font-mono text-xs uppercase tracking-widest">Decrypting logs...</span>
+                                            <div className="w-6 h-6 border-2 border-[#2997FF] border-t-transparent rounded-full animate-spin" />
+                                            <span className="text-xs font-medium">Decrypting logs...</span>
                                         </div>
                                     </td>
                                 </tr>
                             ) : logs.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" className="p-12 text-center text-cyan-500/50">
+                                    <td colSpan="5" className="p-12 text-center text-gray-500">
                                         <div className="flex flex-col items-center gap-3">
-                                            <Sparkles size={32} className="opacity-50" />
-                                            <span className="font-mono text-xs uppercase tracking-widest">No activity detected</span>
+                                            <Sparkle size={24} weight="duotone" />
+                                            <span className="text-xs font-medium">No activity detected</span>
                                         </div>
                                     </td>
                                 </tr>
                             ) : (
                                 logs.map((log) => (
-                                    <tr key={log.id} className="text-sm text-gray-300 hover:bg-cyan-500/5 transition-colors group">
-                                        <td className="p-5 font-mono text-xs text-gray-500 group-hover:text-cyan-400 transition-colors">
+                                    <tr key={log.id} className="text-sm text-gray-300 hover:bg-white/5 transition-colors group">
+                                        <td className="p-6 font-mono text-xs text-gray-500">
                                             {new Date(log.timestamp).toLocaleTimeString()}
                                         </td>
-                                        <td className="p-5 font-bold uppercase tracking-tight group-hover:text-white transition-colors">{log.endpoint}</td>
-                                        <td className="p-5 font-mono text-xs group-hover:text-white transition-colors">{log.userEmail}</td>
-                                        <td className="p-5">
-                                            <span className={`px-2 py-1 rounded text-[10px] font-black uppercase tracking-wider border ${log.outcome === 'ALLOWED'
-                                                ? 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30'
-                                                : 'text-pink-400 bg-pink-500/10 border-pink-500/30'
+                                        <td className="p-6 font-medium text-white tracking-tight">{log.endpoint}</td>
+                                        <td className="p-6 text-gray-400">{log.userEmail}</td>
+                                        <td className="p-6">
+                                            <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${log.outcome === 'ALLOWED'
+                                                ? 'text-[#30D158] bg-[#30D158]/10 border-[#30D158]/20'
+                                                : 'text-[#FF453A] bg-[#FF453A]/10 border-[#FF453A]/20'
                                                 }`}>
+                                                {log.outcome === 'ALLOWED' ? <CheckCircle size={12} weight="fill" /> : <XCircle size={12} weight="fill" />}
                                                 {log.outcome}
                                             </span>
                                         </td>
-                                        <td className="p-5">
+                                        <td className="p-6">
                                             <div className="flex items-center gap-3">
-                                                <span className={`font-mono font-bold text-xs ${log.riskScore > 70 ? 'text-pink-400' : 'text-cyan-400'
-                                                    }`}>{log.riskScore}%</span>
-                                                <div className="flex-1 h-1 bg-gray-800 rounded-full overflow-hidden max-w-[100px]">
+                                                <span className={`font-semibold text-xs ${log.riskScore > 70 ? 'text-[#FF453A]' : 'text-gray-400'
+                                                    }`}>{log.riskScore}</span>
+                                                <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden max-w-[80px]">
                                                     <div
-                                                        className={`h-full transition-all duration-500 ${log.riskScore > 70 ? 'bg-pink-500' :
-                                                            log.riskScore > 40 ? 'bg-purple-500' : 'bg-cyan-500'
+                                                        className={`h-full rounded-full transition-all duration-500 ${log.riskScore > 70 ? 'bg-[#FF453A]' :
+                                                            log.riskScore > 40 ? 'bg-[#AF52DE]' : 'bg-[#2997FF]'
                                                             }`}
-                                                        style={{ width: `${log.riskScore}%`, boxShadow: `0 0 10px currentColor` }}
+                                                        style={{ width: `${log.riskScore}%` }}
                                                     />
                                                 </div>
                                             </div>
@@ -147,3 +133,4 @@ const AuditLogs = () => {
 };
 
 export default AuditLogs;
+

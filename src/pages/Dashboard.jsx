@@ -1,90 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import {
-    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar
+    AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
 } from 'recharts';
-import { Shield, AlertTriangle, Activity, Zap, TrendingUp, Lock, Cpu } from 'lucide-react';
+import { ShieldCheck, Warning, Pulse, Lightning, TrendUp, LockKey, Cpu } from '@phosphor-icons/react';
 import { useNavigate } from 'react-router-dom';
 import api from '../lib/api';
-
-// Animated Counter Component
-const AnimatedCounter = ({ value, duration = 1000 }) => {
-    const [count, setCount] = useState(0);
-
-    useEffect(() => {
-        const start = 0;
-        const end = value;
-        const increment = (end - start) / (duration / 16);
-        let current = start;
-
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= end) {
-                setCount(end);
-                clearInterval(timer);
-            } else {
-                setCount(Math.floor(current));
-            }
-        }, 16);
-
-        return () => clearInterval(timer);
-    }, [value, duration]);
-
-    return <span>{count}</span>;
-};
-
-// Interactive Metric Card Component
-const AnimatedMetricCard = ({ title, value, suffix = '', icon: Icon, gradient, delay = 0, tooltip }) => {
-    const [isHovered, setIsHovered] = useState(false);
-
-    return (
-        <div
-            className="cyber-card p-6 rounded relative overflow-hidden group cursor-pointer will-animate"
-            onMouseEnter={() => setIsHovered(true)}
-            onMouseLeave={() => setIsHovered(false)}
-            data-tooltip={tooltip}
-            style={{
-                animationDelay: `${delay}ms`,
-                boxShadow: isHovered ? '0 0 30px rgba(0, 255, 255, 0.3)' : '0 0 10px rgba(0, 255, 255, 0.1)'
-            }}
-        >
-            {/* Corner Brackets */}
-            <div className={`absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-cyan-500 transition-all duration-300 ${isHovered ? 'w-6 h-6' : ''}`} />
-            <div className={`absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-cyan-500 transition-all duration-300 ${isHovered ? 'w-6 h-6' : ''}`} />
-
-            {/* Background Glow */}
-            <div className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500 blur-xl`} />
-
-            <div className="relative z-10">
-                <div className="flex items-center justify-between mb-4">
-                    <div className={`p-3 rounded-lg bg-gradient-to-br ${gradient} bg-opacity-20 backdrop-blur-sm`}>
-                        <Icon className="text-white" size={24} />
-                    </div>
-                    <div className={`text-xs uppercase font-bold tracking-widest px-2 py-1 rounded border ${isHovered ? 'border-cyan-400 text-cyan-400' : 'border-gray-700 text-gray-500'} transition-colors`}>
-                        LIVE
-                    </div>
-                </div>
-
-                <div className="mb-2">
-                    <div className="text-4xl font-black text-white mb-1 transition-all duration-300 group-hover:scale-110 origin-left">
-                        <AnimatedCounter value={value} />
-                        {suffix && <span className="text-2xl text-cyan-400">{suffix}</span>}
-                    </div>
-                    <div className="text-xs uppercase font-bold tracking-widest text-gray-500 group-hover:text-cyan-400 transition-colors">
-                        {title}
-                    </div>
-                </div>
-
-                {/* Progress Bar */}
-                <div className="h-1 bg-gray-800 rounded-full overflow-hidden">
-                    <div
-                        className={`h-full bg-gradient-to-r ${gradient} transition-all duration-1000 ease-out`}
-                        style={{ width: `${Math.min(100, (value / 100) * 100)}%` }}
-                    />
-                </div>
-            </div>
-        </div>
-    );
-};
+import MetricCard from '../components/dashboard/MetricCard';
 
 const Dashboard = () => {
     const navigate = useNavigate();
@@ -146,35 +67,25 @@ const Dashboard = () => {
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-6">
-                <div className="relative">
-                    <div className="w-20 h-20 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin"></div>
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <div className="w-10 h-10 bg-cyan-500/30 rounded-full animate-pulse"></div>
-                    </div>
-                </div>
-                <div className="text-center">
-                    <p className="text-cyan-400 font-mono text-sm uppercase tracking-widest animate-pulse">
-                        Initializing Quantum Tunnel...
-                    </p>
-                    <p className="text-gray-500 text-xs mt-2">Loading threat intelligence</p>
-                </div>
+            <div className="flex flex-col items-center justify-center min-h-[60vh] space-y-4">
+                <div className="w-12 h-12 border-2 border-[#2997FF] border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-gray-500 text-sm font-medium">Loading Telemetry...</p>
             </div>
         );
     }
 
     if (error) {
         return (
-            <div className="p-6 bg-red-500/10 border border-red-500/50 rounded flex items-center gap-4 animate-bounce-in">
-                <AlertTriangle className="text-red-500 shrink-0" size={24} />
+            <div className="p-6 bg-[#FF453A]/10 border border-[#FF453A]/20 rounded-2xl flex items-center gap-4">
+                <Warning className="text-[#FF453A]" size={24} weight="fill" />
                 <div className="flex-1">
-                    <h3 className="text-lg font-bold text-red-500 uppercase tracking-widest">Connection Error</h3>
-                    <p className="text-red-400 font-mono text-sm">{error}</p>
+                    <h3 className="text-lg font-semibold text-[#FF453A]">Connection Error</h3>
+                    <p className="text-[#FF453A]/80 text-sm">{error}</p>
                 </div>
                 {error.includes("Session") && (
                     <button
                         onClick={() => navigate('/auth')}
-                        className="px-4 py-2 bg-red-500/20 hover:bg-red-500/30 text-red-400 font-bold uppercase rounded border border-red-500/50 transition-all hover:scale-105"
+                        className="px-4 py-2 bg-[#FF453A]/20 hover:bg-[#FF453A]/30 text-[#FF453A] font-medium rounded-lg transition-colors"
                     >
                         Re-Authenticate
                     </button>
@@ -184,128 +95,119 @@ const Dashboard = () => {
     }
 
     return (
-        <div className="space-y-8 pb-8 font-mono">
+        <div className="space-y-8 animate-fade-in">
             {/* Header */}
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 animate-slide-up">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-4xl md:text-5xl font-black uppercase tracking-tighter mb-2 animate-text-glow"
-                        style={{
-                            background: 'linear-gradient(to right, #00ffff, #ff00ff)',
-                            WebkitBackgroundClip: 'text',
-                            WebkitTextFillColor: 'transparent'
-                        }}>
+                    <h1 className="text-3xl font-bold tracking-tight text-white mb-1">
                         Command Center
                     </h1>
-                    <p className="text-cyan-400 font-bold tracking-widest flex items-center gap-2">
-                        <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" />
-                        REAL-TIME THREAT MONITORING
-                    </p>
+                    <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <span className="w-2 h-2 bg-[#30D158] rounded-full animate-pulse" />
+                        Real-time Threat Monitoring
+                    </div>
                 </div>
-                <div className="flex items-center gap-2 px-4 py-2 bg-green-500/10 border border-green-500/30 rounded text-green-400 text-xs font-bold uppercase tracking-widest hover:bg-green-500/20 transition-colors cursor-pointer">
-                    <Activity size={16} className="animate-pulse" />
-                    <span>All Systems Operational</span>
+                <div className="flex items-center gap-2 px-3 py-1.5 bg-[#30D158]/10 border border-[#30D158]/20 rounded-lg text-[#30D158] text-xs font-medium cursor-default">
+                    <Pulse size={16} weight="bold" />
+                    <span>Systems Operational</span>
                 </div>
             </div>
 
-            {/* Interactive Metrics Grid */}
+            {/* Metrics Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                <AnimatedMetricCard
+                <MetricCard
                     title="Risk Score"
                     value={metrics.avgRisk}
-                    suffix="%"
-                    icon={Shield}
-                    gradient="from-cyan-500 to-blue-500"
-                    delay={0}
-                    tooltip="Average risk score across all access attempts"
+                    icon={ShieldCheck}
+                    trend="down"
+                    trendValue={12}
                 />
-                <AnimatedMetricCard
+                <MetricCard
                     title="Active Devices"
                     value={metrics.activeDevices}
                     icon={Cpu}
-                    gradient="from-purple-500 to-pink-500"
-                    delay={100}
-                    tooltip="Currently connected devices"
+                    trend="up"
+                    trendValue={5}
                 />
-                <AnimatedMetricCard
+                <MetricCard
                     title="Blocked Attacks"
                     value={metrics.blockedAttempts}
-                    icon={AlertTriangle}
-                    gradient="from-pink-500 to-red-500"
-                    delay={200}
-                    tooltip="Threats blocked in the last 24 hours"
+                    icon={Warning}
+                    trend="up"
+                    trendValue={8}
                 />
-                <AnimatedMetricCard
-                    title="Compliance"
-                    value={metrics.complianceRate}
-                    suffix="%"
-                    icon={Lock}
-                    gradient="from-green-500 to-emerald-500"
-                    delay={300}
-                    tooltip="Device compliance rate"
+                <MetricCard
+                    title="Compliance Rate"
+                    value={`${metrics.complianceRate}%`}
+                    icon={LockKey}
+                    trend="up"
+                    trendValue={2}
                 />
             </div>
 
-            {/* Charts Section */}
+            {/* Bento Grid - Charts */}
             <div className="grid lg:grid-cols-3 gap-6">
                 {/* Main Trend Chart */}
-                <div className="lg:col-span-2 cyber-card p-6 rounded relative group animate-slide-up">
-                    <div className="absolute top-0 left-0 w-4 h-4 border-t-2 border-l-2 border-cyan-500" />
-                    <div className="absolute bottom-0 right-0 w-4 h-4 border-b-2 border-r-2 border-cyan-500" />
-
-                    <div className="flex items-center justify-between mb-6 relative z-10">
+                <div className="lg:col-span-2 p-6 rounded-2xl bg-[#161617]/60 backdrop-blur-xl border border-white/5">
+                    <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h3 className="text-xl font-black text-white uppercase flex items-center gap-2">
-                                <TrendingUp size={20} className="text-cyan-400" />
+                            <h3 className="text-lg font-semibold text-white flex items-center gap-2">
+                                <TrendUp size={20} className="text-[#2997FF]" weight="bold" />
                                 Risk Analytics
                             </h3>
-                            <p className="text-xs text-gray-500 uppercase tracking-widest mt-1">Real-time Threat Vectors</p>
+                            <p className="text-sm text-gray-500 mt-1">7-Day Threat Vector Analysis</p>
                         </div>
-                        <div className="flex gap-2">
-                            {['1H', '24H', '7D', '30D'].map(range => (
-                                <button key={range} className="px-3 py-1.5 text-xs font-bold border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/20 rounded transition-all hover:scale-110">
+                        <div className="flex gap-2 bg-black/20 p-1 rounded-lg">
+                            {['24H', '7D', '30D'].map(range => (
+                                <button key={range} className={`px-3 py-1 text-xs font-medium rounded-md transition-colors ${range === '7D' ? 'bg-[#2997FF] text-white' : 'text-gray-400 hover:text-white'}`}>
                                     {range}
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    <div className="h-[300px] min-h-[300px] w-full relative z-10">
+                    <div className="h-[300px] w-full">
                         <ResponsiveContainer width="100%" height="100%">
                             <AreaChart data={trendData}>
                                 <defs>
                                     <linearGradient id="colorRisk" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#00ffff" stopOpacity={0.4} />
-                                        <stop offset="95%" stopColor="#00ffff" stopOpacity={0} />
+                                        <stop offset="5%" stopColor="#2997FF" stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor="#2997FF" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0, 255, 255, 0.1)" vertical={false} />
+                                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255, 255, 255, 0.05)" vertical={false} />
                                 <XAxis
                                     dataKey="time"
-                                    stroke="#4b5563"
-                                    tick={{ fill: '#6b7280', fontSize: 10, fontFamily: 'monospace' }}
+                                    stroke="#525252"
+                                    tick={{ fill: '#737373', fontSize: 11 }}
                                     tickLine={false}
+                                    axisLine={false}
+                                    dy={10}
                                 />
                                 <YAxis
-                                    stroke="#4b5563"
-                                    tick={{ fill: '#6b7280', fontSize: 10, fontFamily: 'monospace' }}
+                                    stroke="#525252"
+                                    tick={{ fill: '#737373', fontSize: 11 }}
                                     tickLine={false}
+                                    axisLine={false}
+                                    dx={-10}
                                 />
                                 <Tooltip
                                     contentStyle={{
-                                        background: 'rgba(0, 0, 0, 0.9)',
-                                        border: '1px solid rgba(0, 255, 255, 0.3)',
-                                        borderRadius: '4px',
-                                        fontFamily: 'monospace',
-                                        fontSize: '12px'
+                                        background: 'rgba(22, 22, 23, 0.8)',
+                                        backdropFilter: 'blur(10px)',
+                                        border: '1px solid rgba(255,255,255,0.1)',
+                                        borderRadius: '12px',
+                                        fontSize: '12px',
+                                        color: '#F5F5F7'
                                     }}
-                                    labelStyle={{ color: '#00ffff' }}
-                                    itemStyle={{ color: '#ffffff' }}
+                                    itemStyle={{ color: '#F5F5F7' }}
+                                    cursor={{ stroke: 'rgba(255,255,255,0.1)', strokeWidth: 1 }}
                                 />
                                 <Area
                                     type="monotone"
                                     dataKey="risk"
-                                    stroke="#00ffff"
-                                    strokeWidth={2}
+                                    stroke="#2997FF"
+                                    strokeWidth={3}
                                     fill="url(#colorRisk)"
                                     animationDuration={1500}
                                 />
@@ -315,14 +217,10 @@ const Dashboard = () => {
                 </div>
 
                 {/* Device Health Panel */}
-                <div className="cyber-card p-6 rounded relative group animate-slide-up" style={{ animationDelay: '100ms' }}>
-                    <div className="absolute top-0 left-0 w-3 h-3 border-t-2 border-l-2 border-cyan-500" />
-                    <div className="absolute bottom-0 right-0 w-3 h-3 border-b-2 border-r-2 border-cyan-500" />
-
-                    <h3 className="text-lg font-black uppercase mb-6 text-white relative z-10">Device Health</h3>
-
-                    <div className="space-y-6 relative z-10">
-                        <HealthBar label="Firewall Active" value={deviceHealth.firewallStatus} color="cyan" />
+                <div className="p-6 rounded-2xl bg-[#161617]/60 backdrop-blur-xl border border-white/5 flex flex-col justify-center">
+                    <h3 className="text-lg font-semibold text-white mb-6">Device Health</h3>
+                    <div className="space-y-8">
+                        <HealthBar label="Firewall Active" value={deviceHealth.firewallStatus} color="blue" />
                         <HealthBar label="Disk Encrypted" value={deviceHealth.diskEncryption} color="purple" />
                         <HealthBar label="OS Updated" value={deviceHealth.osUpToDate} color="green" />
                     </div>
@@ -333,25 +231,30 @@ const Dashboard = () => {
 };
 
 const HealthBar = ({ label, value, color }) => {
-    const colorMap = {
-        cyan: 'from-cyan-500 to-blue-500',
-        purple: 'from-purple-500 to-pink-500',
-        green: 'from-green-500 to-emerald-500'
+    const getColor = (c) => {
+        switch (c) {
+            case 'blue': return 'bg-[#2997FF]';
+            case 'purple': return 'bg-[#AF52DE]'; // Apple Purple
+            case 'green': return 'bg-[#30D158]';
+            default: return 'bg-[#2997FF]';
+        }
     };
 
+    const bgColor = getColor(color);
+
     return (
-        <div className="group cursor-pointer">
+        <div className="group">
             <div className="flex justify-between items-center mb-2">
-                <span className="text-xs font-bold uppercase tracking-widest text-gray-400 group-hover:text-white transition-colors">
+                <span className="text-xs font-medium tracking-wide text-gray-400 group-hover:text-white transition-colors">
                     {label}
                 </span>
-                <span className="text-sm font-black text-white">
-                    <AnimatedCounter value={value} />%
+                <span className="text-sm font-bold text-white">
+                    {value}%
                 </span>
             </div>
-            <div className="h-2 bg-gray-800 rounded-full overflow-hidden">
+            <div className="h-2 bg-white/10 rounded-full overflow-hidden">
                 <div
-                    className={`h-full bg-gradient-to-r ${colorMap[color]} transition-all duration-1000 ease-out group-hover:animate-glow-pulse`}
+                    className={`h-full ${bgColor} rounded-full transition-all duration-1000 ease-out`}
                     style={{ width: `${value}%` }}
                 />
             </div>
@@ -360,3 +263,4 @@ const HealthBar = ({ label, value, color }) => {
 };
 
 export default Dashboard;
+
