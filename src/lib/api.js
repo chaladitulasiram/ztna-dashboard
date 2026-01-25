@@ -4,8 +4,8 @@ import axios from 'axios';
 export const DEVICE_ID = 'dev-win-11-prod-01';
 
 const api = axios.create({
-    baseURL: 'http://localhost:8080/api', // Matches your server.port
-    timeout: 10000, // 10 second timeout
+    baseURL: '/api', // Proxied to http://localhost:8080 via vite.config.js
+    timeout: 10000,
 });
 
 // Request interceptor - Add auth token and device ID
